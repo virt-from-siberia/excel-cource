@@ -1,0 +1,25 @@
+@mixin button($colorOne : green, $colorTwo : lighten($colorOne, 25%)) {
+    height: 24px;
+    min-width: 24px;
+    padding: 3px;
+    text-align: center;
+    position: relative;
+    display: inline-block;
+    color: $colorOne;
+    transition: .3s;
+
+
+    &>span {
+        font-size: 18px;
+    }
+
+    &:active,
+    &.active {
+        color: $colorTwo;
+    }
+
+    &:hover {
+        background: #eee;
+        cursor: pointer;
+    }
+}
