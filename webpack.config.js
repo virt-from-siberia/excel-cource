@@ -1,7 +1,5 @@
 const path = require("path");
-const {
-    CleanWebpackPlugin
-} = require("clean-webpack-plugin");
+const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const CopyPlugin = require("copy-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
@@ -12,12 +10,15 @@ const isDev = !isProd;
 const filename = (ext) => (isDev ? `bundle.${ext}` : `bundle.[hash].${ext}`);
 
 const jsLoaders = () => {
-    const loaders = [{
-        loader: "babel-loader",
-        options: {
-            presets: ["@babel/preset-env"],
+    const loaders = [
+        {
+            loader: "babel-loader",
+            options: {
+                presets: ["@babel/preset-env"],
+                plugins: ["@babel/plugin-proposal-class-properties"],
+            },
         },
-    },];
+    ];
     return loaders;
 };
 
@@ -32,6 +33,7 @@ module.exports = {
         filename: filename("js"),
         path: path.resolve(__dirname, "dist"),
     },
+    //NOTE/: ALIAS PATH
     resolve: {
         extensions: [".js"],
         alias: {
@@ -56,37 +58,40 @@ module.exports = {
                 collapseWhitespace: isProd,
             },
         }),
-        new CopyPlugin([{
-            from: path.resolve(__dirname, "src/favicon.ico"),
-            to: path.resolve(__dirname, "dist"),
-        },]),
+        new CopyPlugin([
+            {
+                from: path.resolve(__dirname, "src/favicon.ico"),
+                to: path.resolve(__dirname, "dist"),
+            },
+        ]),
         new MiniCssExtractPlugin({
             filename: filename("css"),
         }),
     ],
     module: {
-        rules: [{
-            test: /\.s[ac]ss$/i,
-            use: [
-                // Creates `style` nodes from JS strings
-                {
-                    loader: MiniCssExtractPlugin.loader,
-                    options: {
-                        hmr: isDev,
-                        reloadAll: true,
+        rules: [
+            {
+                test: /\.s[ac]ss$/i,
+                use: [
+                    // Creates `style` nodes from JS strings
+                    {
+                        loader: MiniCssExtractPlugin.loader,
+                        options: {
+                            hmr: isDev,
+                            reloadAll: true,
+                        },
                     },
-                },
-                // Translates CSS into CommonJS
-                "css-loader",
-                // Compiles Sass to CSS
-                "sass-loader",
-            ],
-        },
-        {
-            test: /\.js$/,
-            exclude: /node_modules/,
-            use: jsLoaders(),
-        },
+                    // Translates CSS into CommonJS
+                    "css-loader",
+                    // Compiles Sass to CSS
+                    "sass-loader",
+                ],
+            },
+            {
+                test: /\.js$/,
+                exclude: /node_modules/,
+                use: jsLoaders(),
+            },
         ],
     },
 };
